@@ -344,7 +344,11 @@ class digitalOceanAPI {
     if($private){
       $params['private'] = 'true';
     };
-    return $this->getRequest('images', $params);
+    $answer = $this->getRequest('images', $params);
+    if(isset($answer['images'])){
+      return $answer['images'];
+    }
+    return $answer;
   }
   /**
    * Create hook for repository.
