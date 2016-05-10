@@ -111,7 +111,7 @@ function zenci_digitalocean_template($form, &$form_state) {
     $image_options[$image->id] = $image->name;
   }
   
-  $ZenCIAPI->reInitCurl();
+  $digitalOceanAPI->reInitCurl();
   
   $sizes =  $digitalOceanAPI->getSizes();
   
