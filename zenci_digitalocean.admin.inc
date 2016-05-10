@@ -281,7 +281,7 @@ function zenci_digitalocean_instance_submit($form, &$form_state) {
   $digitalOceanAPI->reInitCurl();
   
   $settings = array(
-    'name' => 'Test ' . $template->name,
+    'name' => 'test.' . $template->name. ".zen.ci",
     'region' => $image->regions[0],
     'size' => $template->size,
     'image' => $template->image_id,    
