@@ -296,7 +296,7 @@ function zenci_digitalocean_instance_submit($form, &$form_state) {
       $digitalOceanAPI->reInitCurl();
       $data = $digitalOceanAPI->getDroplet($droplet->id);
       if($data->status == 'active'){
-        backdrop_set_message('<pre>' . print_r($data->networks['v4'][0],true) . '</pre>');  
+        backdrop_set_message('<pre>' . print_r($data,true) . '</pre>');  
         break;
       }
     }
