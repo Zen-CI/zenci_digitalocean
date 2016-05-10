@@ -161,6 +161,7 @@ function zenci_digitalocean_template_submit($form, &$form_state) {
       '!name' => $template['name'],
     )));
   }
+  backdrop_goto('admin/config/system/digitalocean/list');  
 }
 
 /**
@@ -177,10 +178,10 @@ function zenci_digitalocean_template_remove($form, &$form_state, $template_id) {
     backdrop_goto('admin/config/system/digitalocean/list');
   }
 
-  $form_state['webhook'] = $template;
+  $form_state['template'] = $template;
 
   $form['message'] = array(
-    '#markup' => t('Are you sure want to delete this webhook?'),
+    '#markup' => t('Are you sure want to delete this template?'),
   );
   $form['actions']['#type'] = 'actions';
   $form['actions']['submit'] = array(
@@ -197,22 +198,10 @@ function zenci_digitalocean_template_remove($form, &$form_state, $template_id) {
  * Submit handler for the zenci_digitalocean_template_remove() form.
  */
 function zenci_digitalocean_template_remove_submit($form, &$form_state) {
-  $webhook = $form_state['webhook'];
-  $settings = array(
-    'owner' => $webhook->owner,
-    'repo' => $webhook->repo,
-  );
-  $ZenCIAPI = zenci_webhook_get_class($settings);
-
-  $ZenCIAPI->deleteHook();
-  if (!$ZenCIAPI->isError()) {
-    db_delete('zenci_webhook_repositories')
-      ->condition('id', $webhook->id)
-      ->execute();
-    backdrop_set_message(t('Hook deleted!'));
-    // Add ability to act on deleted webhook.    
-    module_invoke_all('zenci_webhook', 'deleted', $webhook);
-  }
-  backdrop_goto('admin/config/system/zenci_webhook/list');
+  $template = $form_state['template'];
+  db_delete('zenci_digitalocean_templates')
+    ->condition('id', $template->id)
+    ->execute();
+  backdrop_set_message(t('Template deleted!'));
+  backdrop_goto('admin/config/system/digitalocean/list');
 }
-
