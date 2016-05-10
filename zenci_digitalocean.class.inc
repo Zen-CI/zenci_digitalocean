@@ -318,20 +318,34 @@ class digitalOceanAPI {
   }
 
   /**
-   * Get repository information.
-   * https://developer.github.com/v3/repos/#get
+   * Get Regions information.
+   * https://developers.digitalocean.com/documentation/v2/#regions
    *
    * @return
-   *   Return repository information or FALSE if there is no repository or no
+   *   Return regions information or FALSE if there is no regions or no
    *   access.
    *
-   * @see SetRepoName
-   * @see SetOwnerName
    */
   public function getRegions() {
     return $this->getRequest('regions');
   }
 
+  /**
+   * Get Images information.
+   * https://developers.digitalocean.com/documentation/v2/#images
+   *
+   * @return
+   *   Return images information or FALSE if there is no images or no
+   *   access.
+   *
+   */
+  public function getImages($private = FALSE) {
+    $params = array();
+    if($private){
+      $params['private'] = 'true',
+    };
+    return $this->getRequest('images', $params);
+  }
   /**
    * Create hook for repository.
    *

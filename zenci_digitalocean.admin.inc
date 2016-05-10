@@ -99,33 +99,30 @@ function zenci_digitalocean_templates() {
 /**
  * Add template form.
  */
-function zenci_digitalocean_template() {
+function zenci_digitalocean_template($form, &$form_state) {
   
   $digitalOceanAPI = zenci_digitalocean_get_class();
-  $regions = $digitalOceanAPI->getRegions();
+  $images = $digitalOceanAPI->getImages(TRUE);
   
-  backdrop_set_message('<pre>' . print_r($regions, TRUE) . '</pre>');
+  $form_state['images'] = $images;
   
+  backdrop_set_message('<pre>' . print_r($images, TRUE) . '</pre>');
+
+  $options = array();
+  foreach($images as $image){
+    $options[$image->id] = $image->name;
+  }  
   $form['name'] = array(
     '#type' => 'textfield',
     '#title' => t('Name'),
     '#description' => t('This is a test task name.'),
     '#required' => TRUE,
   );
-  $form['region'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Region'),
-    '#description' => t('The unique slug identifier for the region.'),
-  );
-  $form['size'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Size'),
-    '#description' => t('The unique slug identifier for the size.'),
-  );
   $form['image'] = array(
-    '#type' => 'textfield',
+    '#type' => 'select',
     '#title' => t('Image'),
-    '#description' => t('The image ID of a public or private image, or the unique slug identifier for a public image.'),
+    '#options' => $options,
+    '#description' => t('Please select image.'),
   );
 
   $form['actions']['#type'] = 'actions';
