@@ -296,7 +296,8 @@ function zenci_digitalocean_instance_submit($form, &$form_state) {
       $digitalOceanAPI->reInitCurl();
       $data = $digitalOceanAPI->getDroplet($droplet->id);
       if($data->status == 'active'){
-        backdrop_set_message('<pre>' . print_r($data->networks,true). '</pre>');  
+        $ip_data = $data->networks->v4[0];
+        backdrop_set_message('IP is: ' . $ip_data->ip_address );
         break;
       }
     }
