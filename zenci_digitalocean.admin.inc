@@ -75,8 +75,20 @@ function zenci_digitalocean_templates() {
     );
     $rows[] = $row;
   }
-  $output['link'] = l('Add template', 'admin/config/system/digitalocean/template_add');
-  
+  $output['link'] = array(
+    '#prefix' => '<div class="contextual-links-wrapper">',
+    '#suffix' => '</div>',    
+    '#theme' => 'links__contextual',
+    '#links' => array(
+      'title' => t('Add template'),
+      'href' => "admin/config/system/digitalocean/template_add",
+    ),
+    '#attributes' => array('class' => array('contextual-links')),
+    '#attached' => array(
+      'library' => array(array('contextual', 'contextual-links')),
+    ),
+    '#access' => user_access('access contextual links'),
+  );
   $header = array(t('Name'), t('Region'), t('Size'), t('Image'), t('Operations'));
 
   $output['table'] = array(
