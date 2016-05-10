@@ -342,7 +342,7 @@ class digitalOceanAPI {
   public function getImages($private = FALSE) {
     $params = array();
     if($private){
-      $params['private'] = 'true',
+      $params['private'] = 'true';
     };
     return $this->getRequest('images', $params);
   }
