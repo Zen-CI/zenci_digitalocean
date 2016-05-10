@@ -365,7 +365,7 @@ class digitalOceanAPI {
    *
    */
   public function getSizes() {
-    $answer = $this->getRequest('sizes', $params);
+    $answer = $this->getRequest('sizes');
     if(isset($answer['sizes'])){
       return $answer['sizes'];
     }
