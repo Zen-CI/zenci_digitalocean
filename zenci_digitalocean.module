@@ -148,7 +148,15 @@ function zenci_digitalocean_zenci_webhook($method, $data) {
        *   array with 'config' value where gitlc.yml file is base64 encoded.
        */
        
-       // Create VPS and pass back deploy and testing structure.
+      // Create VPS and pass back deploy and testing structure.
+      
+      $config_filepath = backdrop_get_path('module', 'zenci_digitalocean') . '/gitlc.yml';
+      $data['config_file'] = $config_filepath;
+      if ($config = file_get_contents($config_filepath)) {
+        return array(
+          'config' => base64_encode($config),
+        );
+      }
       break;
     case 'init':
       /** ZenCI init request from ZenCI server. Happen if it's first deployment. Good to call install script.

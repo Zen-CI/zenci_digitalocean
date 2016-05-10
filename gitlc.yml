@@ -1,0 +1,12 @@
+test:
+  php53:
+    tests:
+      username: 'robin'
+      dir: '{home}/www'
+      scripts:
+        init: {home}/scripts/init.sh
+      tests:
+        - {home}/scripts/run_test.sh
+      webhooks:
+        before: http://backdrop.zen.ci/webhook/digitalocean_before
+        after: http://backdrop.zen.ci/webhook/digitalocean_after
