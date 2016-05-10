@@ -267,7 +267,7 @@ class digitalOceanAPI {
 
     $this->prepareCommand($command, $params);
     if ($this->getToken()) {
-      $this->curl->setHeader('Token', $this->getToken());
+      $this->curl->setHeader('Authorization', 'Bearer ' . $this->getToken());
     }
     $this->curl->post(ZENCI_DIGITALOCEAN_API_URI . '/' . $command, $params);
     $response = $this->getResponse();
@@ -291,7 +291,7 @@ class digitalOceanAPI {
     $this->prepareCommand($command, $params);
 
     if ($this->getToken()) {
-      $this->curl->setHeader('Token', $this->getToken());
+      $this->curl->setHeader('Authorization', 'Bearer ' . $this->getToken());
     }
 
     $this->curl->delete(ZENCI_DIGITALOCEAN_API_URI . '/' . $command, $params);
