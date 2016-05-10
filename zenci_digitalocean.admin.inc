@@ -286,7 +286,7 @@ function zenci_digitalocean_instance_submit($form, &$form_state) {
     'size' => $template->size,
     'image' => $template->image_id,    
   );
-  
+  $digitalOceanAPI->setDebug(TRUE);
   $droplet =  $digitalOceanAPI->createDroplet($settings);
   backdrop_set_message('<pre>' . print_r($droplet,true). '</pre>');
    
