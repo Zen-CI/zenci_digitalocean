@@ -5,6 +5,9 @@
  * Spin Up VPS to process tests and destroy after.
  */
  
+ // URL ZenCI DigitalOcean API.
+define('ZENCI_DIGITALOCEAN_API_URI', 'https://api.digitalocean.com/v2');
+ 
 /**
  * Implements hook_config_info().
  */
@@ -180,4 +183,25 @@ function zenci_digitalocean_get_value($env_vars, $variable) {
     return $env_vars[$variable];
   }
   FALSE;
+}
+
+function zenci_digitalocean_get_class() {
+  module_load_include('inc', 'zenci_digitalocean', 'zenci_digitalocean.class');
+
+  $api_token = zenci_digitalocean_get_api_token();
+  $digitalOceanAPI = new digitalOceanAPI();
+  $digitalOceanAPI->setToken($api_token);
+  return $digitalOceanAPI;
+}
+
+function zenci_digitalocean_get_api_token() {
+  $config = config('zenci_digitalocean.settings');
+  
+  // Use setting.php values if exists.
+  $api_token = settings_get('zenci_digitalocean_api_token');
+
+  if (empty($api_token)) {
+    $api_token = $config->get('api_token');
+  }
+  return $api_token;
 }

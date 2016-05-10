@@ -100,6 +100,13 @@ function zenci_digitalocean_templates() {
  * Add template form.
  */
 function zenci_digitalocean_template() {
+  
+  $digitalOceanAPI = zenci_digitalocean_get_class();
+  
+  $regions = $ZenCIAPI->getRegions();
+  
+  backdrop_set_message('<pre>' . print_r($regions, TRUE) . '</pre>');
+  
   $form['name'] = array(
     '#type' => 'textfield',
     '#title' => t('Name'),
