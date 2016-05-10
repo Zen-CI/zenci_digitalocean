@@ -75,6 +75,16 @@ function zenci_digitalocean_menu() {
     'type' => MENU_CALLBACK,
   );
 
+  $items['admin/config/system/digitalocean/instance_add'] = array(
+    'title' => 'Add template',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('zenci_digitalocean_instance', 4),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer site configuration'),
+    'file' => 'zenci_digitalocean.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+
   $items['admin/config/system/digitalocean/%/delete'] = array(
     'title' => 'Remove template',
     'page callback' => 'backdrop_get_form',

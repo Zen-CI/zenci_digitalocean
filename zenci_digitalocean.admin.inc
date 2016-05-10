@@ -220,7 +220,6 @@ function zenci_digitalocean_template_remove($form, &$form_state, $template_id) {
 
 }
 
-
 /**
  * Submit handler for the zenci_digitalocean_template_remove() form.
  */
@@ -231,4 +230,36 @@ function zenci_digitalocean_template_remove_submit($form, &$form_state) {
     ->execute();
   backdrop_set_message(t('Template deleted!'));
   backdrop_goto('admin/config/system/digitalocean/list');
+}
+
+/**
+ * Add instance form.
+ */
+function zenci_digitalocean_instance($form, &$form_state) {
+
+  $templates = db_select('zenci_digitalocean_templates', 'wr')
+    ->fields('wr')
+    ->orderBy('name', 'DESC')
+    ->execute()
+    ->fetchAll();
+
+  $options = array();
+  foreach ($templates as $template) {
+    $options[$template->name] = $template->name . " " . $template->image . " " . $template->size;
+  }  
+  $form['name'] = array(
+    '#type' => 'select',
+    '#title' => t('Template name'),
+    '#options' => $options,
+    '#description' => t('Please select template name.'),
+  );
+
+
+  $form['actions']['#type'] = 'actions';
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Add instance'),
+  );
+
+  return $form;
 }
