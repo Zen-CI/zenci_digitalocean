@@ -169,11 +169,12 @@ function zenci_digitalocean_template_validate($form, &$form_state) {
  * Submit handler for the zenci_digitalocean_template() form.
  */
 function zenci_digitalocean_template_submit($form, &$form_state) {
+  print_r($form_state['values']);
+  exit();
   $template = array(
     'name' => $form_state['values']['name'],
-    'region' => $form_state['values']['region'],
     'size' => $form_state['values']['size'],
-    'image' => $form_state['values']['image'],
+    'image_id' => $form_state['values']['image'],
   );
   if(FALSE !== backdrop_write_record('zenci_digitalocean_templates', $template)){
     backdrop_set_message(t('Template !name created', array(
