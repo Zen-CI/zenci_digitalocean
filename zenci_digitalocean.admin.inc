@@ -75,6 +75,8 @@ function zenci_digitalocean_templates() {
     );
     $rows[] = $row;
   }
+  $output['form'] = backdrop_get_form('zenci_digitalocean_template');
+  
   $header = array(t('Name'), t('Region'), t('Size'), t('Image'), t('Operations'));
 
   $output['table'] = array(
@@ -85,3 +87,68 @@ function zenci_digitalocean_templates() {
   );
   return $output;  
 }
+
+function zenci_digitalocean_template() {
+  $form['name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Name'),
+    '#description' => t('This is a test task name.'),
+    '#required' => TRUE,
+  );
+  $form['region'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Region'),
+    '#description' => t('The unique slug identifier for the region.'),
+  );
+  $form['size'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Region'),
+    '#description' => t('The unique slug identifier for the size.'),
+  );
+  $form['image'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Image'),
+    '#description' => t('The image ID of a public or private image, or the unique slug identifier for a public image.'),
+  );
+
+  $form['actions']['#type'] = 'actions';
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Add template'),
+  );
+
+  return $form;
+}
+
+/**
+ * Validate handler for the zenci_digitalocean_template() form.
+ */
+function zenci_digitalocean_template_validate($form, &$form_state) {
+  $template = db_select('zenci_digitalocean_templates', 'gh')
+    ->fields('gh')
+    ->condition('name', $form_state['values']['name'])
+    ->execute()
+    ->fetchObject();
+
+  if ($template) {
+    form_set_error('name', t('Name value should be unique.'));
+  }
+}
+
+/**
+ * Submit handler for the zenci_digitalocean_template() form.
+ */
+function zenci_digitalocean_template_submit($form, &$form_state) {
+  $template = array(
+    'name' => $form_state['values']['name'],
+    'region' => $form_state['values']['region'],
+    'size' => $form_state['values']['size'],
+    'image' => $form_state['values']['image'],
+  );
+  if(FALSE !== backdrop_write_record('zenci_digitalocean_templates', $template)){
+    backdrop_set_message(t('Template !name created', array(
+      '!name' => $template['name'],
+    )));
+  }
+}
+
