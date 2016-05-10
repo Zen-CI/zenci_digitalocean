@@ -86,10 +86,6 @@ function zenci_digitalocean_templates() {
       ),
     ),
     '#attributes' => array('class' => array('contextual-links')),
-    '#attached' => array(
-      'library' => array(array('contextual', 'contextual-links')),
-    ),
-    '#access' => user_access('access contextual links'),
   );
   $header = array(t('Name'), t('Region'), t('Size'), t('Image'), t('Operations'));
 
