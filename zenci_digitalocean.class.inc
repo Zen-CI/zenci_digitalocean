@@ -218,7 +218,7 @@ class digitalOceanAPI {
     $this->prepareCommand($command, $params);
 
     if ($this->getToken()) {
-      $this->curl->setHeader('Authorization: Bearer ', $this->getToken());
+      $this->curl->setHeader('Authorization', 'Bearer ' . $this->getToken());
     }
 
     $this->curl->get(ZENCI_DIGITALOCEAN_API_URI . '/' . $command, $params);
