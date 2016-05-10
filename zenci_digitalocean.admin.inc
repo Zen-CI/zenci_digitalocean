@@ -290,16 +290,17 @@ function zenci_digitalocean_instance_submit($form, &$form_state) {
   $droplet =  $digitalOceanAPI->createDroplet($settings);
   backdrop_set_message('<pre>' . print_r($droplet,true). '</pre>');
 
-  sleep(5);  
-  $digitalOceanAPI->reInitCurl();
-  $data = $digitalOceanAPI->getDroplet($droplet->id);
+  if($droplet->status != 'active'){
+    while(TRUE){
+      sleep(5);  
+      $digitalOceanAPI->reInitCurl();
+      $data = $digitalOceanAPI->getDroplet($droplet->id);
+      if($data->status == 'active'){
+        backdrop_set_message('<pre>' . print_r($data->networks['v4'][0],true) . '</pre>');  
+        break;
+      }
+    }
+  }
 
-  backdrop_set_message('<pre>' . print_r($data,true). '</pre>');  
-/*  while(true){
-    sleep(1);
-    $digitalOceanAPI->reInitCurl();
-    $data = $digitalOceanAPI->getDroplet($droplet->id);
-    if($data->networks->v4)
-  }*/
    
 }
