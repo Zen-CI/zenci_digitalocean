@@ -327,7 +327,11 @@ class digitalOceanAPI {
    *
    */
   public function getRegions() {
-    return $this->getRequest('regions');
+    $answer = $this->getRequest('regions');
+    if(isset($answer['regions'])){
+      return $answer['regions'];
+    }
+    return $answer;
   }
 
   /**
@@ -347,6 +351,23 @@ class digitalOceanAPI {
     $answer = $this->getRequest('images', $params);
     if(isset($answer['images'])){
       return $answer['images'];
+    }
+    return $answer;
+  }
+  
+  /**
+   * Get Size information.
+   * https://developers.digitalocean.com/documentation/v2/#sizes
+   *
+   * @return
+   *   Return size information or FALSE if there is no sizes or no
+   *   access.
+   *
+   */
+  public function getSizes() {
+    $answer = $this->getRequest('sizes', $params);
+    if(isset($answer['sizes'])){
+      return $answer['sizes'];
     }
     return $answer;
   }

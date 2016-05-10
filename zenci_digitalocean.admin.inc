@@ -106,12 +106,20 @@ function zenci_digitalocean_template($form, &$form_state) {
   
   $form_state['images'] = $images;
   
-  backdrop_set_message('<pre>' . print_r($images, TRUE) . '</pre>');
-
-  $options = array();
+  $image_options = array();
   foreach($images as $image){
-    $options[$image->id] = $image->name;
-  }  
+    $image_options[$image->id] = $image->name;
+  }
+  
+  $ZenCIAPI->reInitCurl();
+  
+  $sizes =  $digitalOceanAPI->getSizes();
+  
+  $size_options = array();
+  foreach($sizes as $size){
+    $size_options[$size->slug] = $size->slug;
+  }
+  
   $form['name'] = array(
     '#type' => 'textfield',
     '#title' => t('Name'),
@@ -121,9 +129,17 @@ function zenci_digitalocean_template($form, &$form_state) {
   $form['image'] = array(
     '#type' => 'select',
     '#title' => t('Image'),
-    '#options' => $options,
+    '#options' => $image_options,
     '#description' => t('Please select image.'),
   );
+
+  $form['size'] = array(
+    '#type' => 'select',
+    '#title' => t('Size'),
+    '#options' => $size_options,
+    '#description' => t('Please select image.'),
+  );
+
 
   $form['actions']['#type'] = 'actions';
   $form['actions']['submit'] = array(
