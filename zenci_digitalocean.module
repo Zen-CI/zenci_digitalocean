@@ -17,6 +17,18 @@ function zenci_digitalocean_config_info() {
 }
 
 /**
+ * Implements hook_permission().
+ */
+function zenci_digitalocean_permission() {
+  return array(
+    'test job view' => array(
+      'title' => t('Access job results'),
+    ),
+  );
+}
+
+
+/**
  * Implements hook_menu().
  */
 function zenci_digitalocean_menu() {
@@ -25,13 +37,40 @@ function zenci_digitalocean_menu() {
   $items['admin/config/system/digitalocean'] = array(
     'title' => 'DigitalOcean settings',
     'description' => 'DigitalOcean settings.',
-    'page callback' => 'backdrop_get_form',
-    'page arguments' => array('zenci_digitalocean_settings'),
+    'page callback' => 'zenci_digitalocean_templates',
     'access callback' => 'user_access',
     'access arguments' => array('administer site configuration'),
     'file' => 'zenci_digitalocean.admin.inc',
     'type' => MENU_NORMAL_ITEM,
   );
+
+  $items['admin/config/system/digitalocean/list'] = array(
+    'title' => 'DigitalOcean Templates',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+
+  // Admin settings page.
+  $items['admin/config/system/digitalocean/settings'] = array(
+    'title' => 'DigitalOcean settings',
+    'description' => 'DigitalOcean settings.',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('zenci_digitalocean_settings'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer site configuration'),
+    'file' => 'zenci_digitalocean.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 10,
+  );
+
+  $items['zenci_joblist'] = array(
+    'title' => 'ZenCI tests results',
+    'description' => 'View result of tests.',
+    'page callback' => 'zenci_digitalocean_job_list',
+    'access callback' => 'user_access',
+    'access arguments' => array('test job view'),
+    'file' => 'zenci_digitalocean.pages.inc',
+    'type' => MENU_NORMAL_ITEM,  
+  );  
 
   return $items;
 }

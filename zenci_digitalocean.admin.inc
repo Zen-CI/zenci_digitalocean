@@ -45,3 +45,43 @@ function zenci_digitalocean_settings_submit($form, &$form_state) {
   
   backdrop_set_message(t('The configuration options have been saved.'));
 }
+
+/**
+ * Menu callback; Display a list of all Digital Ocean templates.
+ */
+function zenci_digitalocean_templates() {
+  $templates = db_select('zenci_digitalocean_templates', 'wr')
+    ->fields('wr')
+    ->orderBy('name', 'DESC')
+    ->execute()
+    ->fetchAll();
+
+  $rows = array();
+  foreach ($templates as $template) {
+    $row = array();
+    $row[] = array('data' => $template->name);
+    $row[] = array('data' => $template->region);
+    $row[] = array('data' => $template->size);
+    $row[] = array('data' => $template->image);
+    $links['delete'] = array(
+      'title' => t('Delete'),
+      'href' => "admin/config/system/digitalocean/" . $template->id . "/delete",
+    );
+    $row[] = array(
+      'data' => array(
+        '#type' => 'operations',
+        '#links' => $links,
+      ),
+    );
+    $rows[] = $row;
+  }
+  $header = array(t('Name'), t('Region'), t('Size'), t('Image'), t('Operations'));
+
+  $output['table'] = array(
+    '#theme' => 'table__zenci_digitalocean_templates',
+    '#rows' => $rows,
+    '#header' => $header,
+    '#empty' => t('No templates yet.'),
+  );
+  return $output;  
+}
