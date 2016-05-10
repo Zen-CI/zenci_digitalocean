@@ -245,7 +245,7 @@ function zenci_digitalocean_instance($form, &$form_state) {
 
   $options = array();
   foreach ($templates as $template) {
-    $options[$template->name] = $template->name . " " . $template->image . " " . $template->size;
+    $options[$template->name] = $template->name . " " . $template->image_name . " " . $template->size;
   }  
   $form['name'] = array(
     '#type' => 'select',
@@ -262,4 +262,32 @@ function zenci_digitalocean_instance($form, &$form_state) {
   );
 
   return $form;
+}
+
+/**
+ * Submit handler for the zenci_digitalocean_instance() form.
+ */
+function zenci_digitalocean_instance_submit($form, &$form_state) {
+  
+  $template = db_select('zenci_digitalocean_templates', 'gh')
+    ->fields('gh')
+    ->condition('name', $form_state['values']['name'])
+    ->execute()
+    ->fetchObject();
+  
+  $digitalOceanAPI = zenci_digitalocean_get_class();
+  $image = $digitalOceanAPI->getImage($template->image_id);
+  
+  $digitalOceanAPI->reInitCurl();
+  
+  $droplet = array(
+    'name' => 'Test ' . $template->name,
+    'region' => $image->regions[0],
+    'size' => $template->size,
+    'image' => $template->image_id,    
+  );
+  
+  $droplet =  $digitalOceanAPI->createDroplet();
+  backdrop_set_message('<pre>' . print_r($droplet,true). '</pre>');
+   
 }

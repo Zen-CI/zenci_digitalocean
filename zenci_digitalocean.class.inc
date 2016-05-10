@@ -354,6 +354,24 @@ class digitalOceanAPI {
     }
     return $answer;
   }
+
+  /**
+   * Get Image information.
+   * https://developers.digitalocean.com/documentation/v2/#retrieve-an-existing-image-by-id
+   *
+   * @return
+   *   Return images information or FALSE if there is no images or no
+   *   access.
+   *
+   */
+  public function getImage($image_id) {
+
+    $answer = $this->getRequest('images/' . $image_id);
+    if(isset($answer['image'])){
+      return $answer['image'];
+    }
+    return $answer;
+  }
   
   /**
    * Get Size information.
@@ -372,24 +390,34 @@ class digitalOceanAPI {
     return $answer;
   }
   /**
-   * Create hook for repository.
+   * Create droplet.
+   * https://developers.digitalocean.com/documentation/v2/#create-a-new-droplet
    *
    * @param $settings array
-   *   An array of settings for hook
-   *     - url: The URL to which the payloads will be delivered.
-   *     - secret: If provided, payloads will be delivered with an Signature
-   *   header.
+   *   An array of settings for droplet
+   *     - name: The name for droplet. REQUIRED
+   *     - region: The region for droplet.  REQUIRED
+   *     - size: The size for droplet.  REQUIRED
+   *     - image: The image for droplet.  REQUIRED
+   *     - ssh_keys: The ssh_keys for droplet.
+   *     - backups: The backups for droplet.
+   *     - ipv6: The ipv6 for droplet. TRUE or FALSE
+   *     - user_data: The user_data for droplet.
+   *     - private_networking: The private_networking for droplet.
    *
    * @return
-   *   Return hook information or FALSE if there is no access.
+   *   Return droplet information or FALSE if there is no access.
    *
-   * @see SetRepoName
-   * @see SetOwnerName
    */
-  public function createHook($settings) {
-    $settings[':owner'] = $this->owner_name;
-    $settings[':repo'] = $this->repo_name;
-    return $this->postRequest('repos/:owner/:repo/hook', $settings);
+   
+  
+  public function createDroplet($settings) {
+    $answer =  $this->postRequest('droplets', $settings);
+    if(isset($answer['droplet'])){
+      return $answer['droplet'];
+    }
+    return $answer;
+
   }
 
   /**
