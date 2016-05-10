@@ -174,7 +174,7 @@ function zenci_digitalocean_template_remove($form, &$form_state, $template_id) {
     ->execute()
     ->fetchObject();
 
-  if (empty($webhook)) {
+  if (empty($template)) {
     backdrop_goto('admin/config/system/digitalocean/list');
   }
 
