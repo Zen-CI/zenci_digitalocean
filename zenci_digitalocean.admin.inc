@@ -181,7 +181,7 @@ function zenci_digitalocean_template_submit($form, &$form_state) {
     'name' => $form_state['values']['name'],
     'size' => $form_state['values']['size'],
     'image_id' => $form_state['values']['image'],
-    'image_name' => $form_state['values']['image'],
+    'image_name' => $image_name,
   );
   if(FALSE !== backdrop_write_record('zenci_digitalocean_templates', $template)){
     backdrop_set_message(t('Template !name created', array(
