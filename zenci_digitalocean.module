@@ -62,6 +62,27 @@ function zenci_digitalocean_menu() {
     'weight' => 10,
   );
 
+  $items['admin/config/system/digitalocean/template_add'] = array(
+    'title' => 'Add template',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('zenci_digitalocean_template', 4),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer site configuration'),
+    'file' => 'zenci_digitalocean.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['admin/config/system/digitalocean/%/delete'] = array(
+    'title' => 'Remove template',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('zenci_digitalocean_template_remove', 4),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer site configuration'),
+    'file' => 'zenci_digitalocean.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+  
+
   $items['zenci_joblist'] = array(
     'title' => 'ZenCI tests results',
     'description' => 'View result of tests.',
