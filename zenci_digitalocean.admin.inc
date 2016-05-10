@@ -80,8 +80,10 @@ function zenci_digitalocean_templates() {
     '#suffix' => '</div>',    
     '#theme' => 'links__contextual',
     '#links' => array(
-      'title' => t('Add template'),
-      'href' => "admin/config/system/digitalocean/template_add",
+      'add' => array(
+        'title' => t('Add template'),
+        'href' => "admin/config/system/digitalocean/template_add",
+      ),
     ),
     '#attributes' => array('class' => array('contextual-links')),
     '#attached' => array(
