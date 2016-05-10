@@ -1,0 +1,123 @@
+<?php
+/**
+ * @file
+ * Prepare testing environment on DigitalOcean.
+ * Spin Up VPS to process tests and destroy after.
+ */
+ 
+/**
+ * Implements hook_config_info().
+ */
+function zenci_digitalocean_config_info() {
+  $prefixes['zenci_digitalocean.settings'] = array(
+    'label' => t('DigitalOcean settings'),
+    'group' => t('Configuration'),
+  );
+  return $prefixes;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function zenci_digitalocean_menu() {
+  $items = array();
+
+  $items['admin/config/system/digitalocean'] = array(
+    'title' => 'DigitalOcean settings',
+    'description' => 'DigitalOcean settings.',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('zenci_digitalocean_settings'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer site configuration'),
+    'file' => 'zenci_digitalocean.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_zenci_webhook().
+ */
+function zenci_digitalocean_zenci_webhook($method, $data) {
+  switch ($method) {
+    case 'created':
+      /** ZenCI webhook has been created.
+       *
+       * @param $data array
+       *   - owner: GitHub organisation or user.
+       *   - repo: GitHub repository name.
+       *   - secret: secret used to signature ZenCI webhooks.
+       *   - public_key: SSH public_key for ZenCI deploy process.
+       */
+
+      break;
+    case 'deleted':
+      /** ZenCI webhook has been deleted.
+       *
+       * @param $data array
+       *   - owner: GitHub organisation or user.
+       *   - repo: GitHub repository name.
+       *   - secret: secret used to signature ZenCI webhooks.
+       *   - public_key: SSH public_key for ZenCI deploy process.
+       */
+
+      break;
+    case 'config':
+      /** ZenCI config reguest from ZenCI server.
+       *
+       * @param $data array
+       *   - owner: GitHub organisation or user.
+       *   - repo: GitHub repository name.
+       *   - branch: repository branch that is going to be deployed.
+       *
+       * @return
+       *   array with 'config' value where gitlc.yml file is base64 encoded.
+       */
+       
+       // Create VPS and pass back deploy and testing structure.
+      break;
+    case 'init':
+      /** ZenCI init request from ZenCI server. Happen if it's first deployment. Good to call install script.
+       *
+       * @param $data array
+       *   - config: current config structure. Usefull if provided by .gitlc.yml file in GitHub Repository.
+       *     - env_vars: Enviorment values set by script or Gitlc.
+       *   - repo_name: GitHub repository name.
+       *   - repo_owner: GitHub repository owner.
+       *   - branch: repository branch that is going to be deployed.
+       *   - pull_request: PR number or FALSE.
+       *
+       * @return
+       *   array with 'env_vars'. All enviotment variables will be available via ENV in scripts.
+       */
+
+      break;
+    case 'remove':
+      /** ZenCI remove request from ZenCI server. Happen if branch deleted or PR closed. Good to cleanup data.
+       *
+       * @param $data array
+       *   - config: current config structure. Usefull if provided by .gitlc.yml file in GitHub Repository.
+       *     - env_vars: Enviorment values set by script or Gitlc.
+       *   - repo_name: GitHub repository name.
+       *   - repo_owner: GitHub repository owner.
+       *   - branch: repository branch that is going to be deployed.
+       *   - pull_request: PR number or FALSE.
+       *
+       * @return
+       *   Nothig. This webhook happen after remove script get processed.
+       */
+
+      // removing VPS 
+
+      break;
+  }
+  return $data;
+}
+
+function zenci_digitalocean_get_value($env_vars, $variable) {
+  if (isset($env_vars[$variable])) {
+    return $env_vars[$variable];
+  }
+  FALSE;
+}
