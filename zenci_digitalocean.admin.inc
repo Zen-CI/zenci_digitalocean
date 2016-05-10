@@ -103,7 +103,7 @@ function zenci_digitalocean_template() {
   
   $digitalOceanAPI = zenci_digitalocean_get_class();
   
-  $regions = $ZenCIAPI->getRegions();
+  $regions = $digitalOceanAPI->getRegions();
   
   backdrop_set_message('<pre>' . print_r($regions, TRUE) . '</pre>');
   
