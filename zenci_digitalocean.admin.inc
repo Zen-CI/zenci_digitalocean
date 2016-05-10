@@ -60,9 +60,8 @@ function zenci_digitalocean_templates() {
   foreach ($templates as $template) {
     $row = array();
     $row[] = array('data' => $template->name);
-    $row[] = array('data' => $template->region);
     $row[] = array('data' => $template->size);
-    $row[] = array('data' => $template->image);
+    $row[] = array('data' => $template->image_name);
     $links['delete'] = array(
       'title' => t('Delete'),
       'href' => "admin/config/system/digitalocean/" . $template->id . "/delete",
@@ -85,7 +84,7 @@ function zenci_digitalocean_templates() {
     ),
     '#attributes' => array('class' => array('button-primary')),
   );
-  $header = array(t('Name'), t('Region'), t('Size'), t('Image'), t('Operations'));
+  $header = array(t('Name'), t('Size'), t('Image'), t('Operations'));
 
   $output['table'] = array(
     '#theme' => 'table__zenci_digitalocean_templates',
@@ -169,12 +168,20 @@ function zenci_digitalocean_template_validate($form, &$form_state) {
  * Submit handler for the zenci_digitalocean_template() form.
  */
 function zenci_digitalocean_template_submit($form, &$form_state) {
-  print_r($form_state['values']);
-  exit();
+
+  $image_name = '';
+  $images = $form_state['images'];
+  foreach($images as $image){
+    if($image->id == $form_state['values']['image']){
+      $image_name = $image->name;
+    }
+  }
+    
   $template = array(
     'name' => $form_state['values']['name'],
     'size' => $form_state['values']['size'],
     'image_id' => $form_state['values']['image'],
+    'image_name' => $form_state['values']['image'],
   );
   if(FALSE !== backdrop_write_record('zenci_digitalocean_templates', $template)){
     backdrop_set_message(t('Template !name created', array(
