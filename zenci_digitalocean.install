@@ -25,27 +25,26 @@ function zenci_digitalocean_schema() {
         'not null' => TRUE,
         'default' => '',
       ),
-      'region' => array(
-        'description' => 'The unique slug identifier for the region.',
-        'type' => 'varchar',
-        'length' => 255,
-        'not null' => TRUE,
-        'default' => '',
-      ),
       'size' => array(
         'description' => 'The unique slug identifier for the size.',
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
         'default' => '',
-      ),      
-      'image' => array(
-        'description' => 'The image ID of a public or private image, or the unique slug identifier for a public image.',
+      ),
+      'image_name' => array(
+        'description' => 'Image name.',
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
         'default' => '',
-      ),      
+      ),
+      'image_id' => array(
+        'description' => 'The image ID of a public or private image, or the unique slug identifier for a public image.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ), 
     ),
     'unique keys' => array(
       'id' => array('id'),
