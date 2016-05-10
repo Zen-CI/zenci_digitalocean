@@ -410,6 +410,23 @@ class digitalOceanAPI {
    *
    */
    
+  /**
+   * Get Image information.
+   * https://developers.digitalocean.com/documentation/v2/#retrieve-an-existing-image-by-id
+   *
+   * @return
+   *   Return images information or FALSE if there is no images or no
+   *   access.
+   *
+   */
+  public function getDroplet($droplet_id) {
+
+    $answer = $this->getRequest('droplets/' . $droplet_id);
+    if(isset($answer['droplet'])){
+      return $answer['droplet'];
+    }
+    return $answer;
+  }
   
   public function createDroplet($settings) {
     $answer =  $this->postRequest('droplets', $settings);
