@@ -4,9 +4,23 @@ test:
       username: 'robin'
       dir: '{home}/www'
       scripts:
-        init: {home}/scripts/init.sh
+        before: {home}/github/gitlc/scripts/update_gitlc.sh
+        init: {home}/github/gitlc/scripts/init_test.sh
       tests:
-        - {home}/scripts/run_test.sh
+        - {home}/github/gitlc/scripts/run_test.sh
       webhooks:
-        before: http://backdrop.zen.ci/webhook/digitalocean_before
-        after: http://backdrop.zen.ci/webhook/digitalocean_after
+        before_deploy: http://backdrop.zen.ci/webhook/digitalocean_before
+        after_deploy: http://backdrop.zen.ci/webhook/digitalocean_after
+      undeploy: false
+    pull_request:
+      username: 'robin'
+      dir: '{home}/www'
+      scripts:
+        before: {home}/github/gitlc/scripts/update_gitlc.sh
+        init: {home}/github/gitlc/scripts/init_test.sh
+      tests:
+        - {home}/github/gitlc/scripts/run_test.sh
+      webhooks:
+        before_deploy: http://backdrop.zen.ci/webhook/digitalocean_before
+        after_deploy: http://backdrop.zen.ci/webhook/digitalocean_after
+      undeploy: false

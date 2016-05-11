@@ -114,28 +114,6 @@ function zenci_digitalocean_menu() {
  */
 function zenci_digitalocean_zenci_webhook($method, $data) {
   switch ($method) {
-    case 'created':
-      /** ZenCI webhook has been created.
-       *
-       * @param $data array
-       *   - owner: GitHub organisation or user.
-       *   - repo: GitHub repository name.
-       *   - secret: secret used to signature ZenCI webhooks.
-       *   - public_key: SSH public_key for ZenCI deploy process.
-       */
-
-      break;
-    case 'deleted':
-      /** ZenCI webhook has been deleted.
-       *
-       * @param $data array
-       *   - owner: GitHub organisation or user.
-       *   - repo: GitHub repository name.
-       *   - secret: secret used to signature ZenCI webhooks.
-       *   - public_key: SSH public_key for ZenCI deploy process.
-       */
-
-      break;
     case 'config':
       /** ZenCI config reguest from ZenCI server.
        *
@@ -151,15 +129,15 @@ function zenci_digitalocean_zenci_webhook($method, $data) {
       // Create VPS and pass back deploy and testing structure.
       
       $config_filepath = backdrop_get_path('module', 'zenci_digitalocean') . '/gitlc.yml';
-      $data['config_file'] = $config_filepath;
+
       if ($config = file_get_contents($config_filepath)) {
         return array(
           'config' => base64_encode($config),
         );
       }
       break;
-    case 'init':
-      /** ZenCI init request from ZenCI server. Happen if it's first deployment. Good to call install script.
+    case 'digitalocean_before':
+      /** ZenCI before test request from ZenCI server.
        *
        * @param $data array
        *   - config: current config structure. Usefull if provided by .gitlc.yml file in GitHub Repository.
@@ -168,14 +146,46 @@ function zenci_digitalocean_zenci_webhook($method, $data) {
        *   - repo_owner: GitHub repository owner.
        *   - branch: repository branch that is going to be deployed.
        *   - pull_request: PR number or FALSE.
+       *   - action: create,push,opened,synchronize.
+       *   - test: test name.
        *
        * @return
        *   array with 'env_vars'. All enviotment variables will be available via ENV in scripts.
        */
-
+       
+       switch($data['action']){
+         case 'create':
+         case 'push':
+         case 'opened':
+         case 'synchronize':
+           // create VPS
+           $prefix = '';
+           if($data['pull_request']){
+             $prefix .= $data['pull_request'] . ".";
+           }
+           $prefix = $data['branch'] . "." . $data['repo_name'] . "." . $data['repo_owner'];
+           $droplet = zenci_digitalocean_create_instance($data['test'], $prefix);
+           
+           if($droplet){
+             $record = array(
+               'droplet_id' => $droplet->id,
+               'created' => time(),
+               'owner' => $data['repo_owner'],
+               'repo' => $data['repo_name'],
+               'branch' => $data['branch'],
+               'pr' => (int) $data['pull_request'],
+               'name' => $data['test'],
+             );
+             backdrop_write_record('zenci_digitalocean_instances', $record);
+           }
+           
+           $answer = array();
+           $answer['server'] = $data->networks->v4[0]->ip_address;
+         break;         
+       }
       break;
-    case 'remove':
-      /** ZenCI remove request from ZenCI server. Happen if branch deleted or PR closed. Good to cleanup data.
+    case 'digitalocean_after':
+      /** ZenCI before test request from ZenCI server.
        *
        * @param $data array
        *   - config: current config structure. Usefull if provided by .gitlc.yml file in GitHub Repository.
@@ -184,14 +194,22 @@ function zenci_digitalocean_zenci_webhook($method, $data) {
        *   - repo_owner: GitHub repository owner.
        *   - branch: repository branch that is going to be deployed.
        *   - pull_request: PR number or FALSE.
+       *   - action: create,push,.
        *
        * @return
-       *   Nothig. This webhook happen after remove script get processed.
+       *   array with 'env_vars'. All enviotment variables will be available via ENV in scripts.
        */
-
-      // removing VPS 
-
+       
+       switch($data['action']){
+         case 'create':
+         case 'push':
+         case 'opened':
+         case 'synchronize':
+           // destroy VPS
+         break;         
+       }
       break;
+      
   }
   return $data;
 }
@@ -222,4 +240,39 @@ function zenci_digitalocean_get_api_token() {
     $api_token = $config->get('api_token');
   }
   return $api_token;
+}
+
+function zenci_digitalocean_create_instance($template_name, $prefix){
+  $template = db_select('zenci_digitalocean_templates', 'gh')
+    ->fields('gh')
+    ->condition('name', $template_name)
+    ->execute()
+    ->fetchObject();
+  
+  $digitalOceanAPI = zenci_digitalocean_get_class();
+  $image = $digitalOceanAPI->getImage($template->image_id);
+  
+  $digitalOceanAPI->reInitCurl();
+  
+  $settings = array(
+    'name' => $prefix . '.' . $template->name. ".zen.ci",
+    'region' => $image->regions[0],
+    'size' => $template->size,
+    'image' => $template->image_id,    
+  );
+
+  $droplet =  $digitalOceanAPI->createDroplet($settings);
+
+  if($droplet->status != 'active'){
+    while(TRUE){
+      sleep(5);  
+      $digitalOceanAPI->reInitCurl();
+      $data = $digitalOceanAPI->getDroplet($droplet->id);
+      if($data->status == 'active'){
+        return $data;
+      }
+    }
+  }else{
+    return $droplet;
+  }
 }
