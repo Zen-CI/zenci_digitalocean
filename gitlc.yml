@@ -2,7 +2,7 @@ test:
   php53:
     tests:
       username: 'robin'
-      dir: '{home}/www'
+      dir: '{home}/github'
       scripts:
         before: '{home}/github/gitlc/scripts/update_gitlc.sh'
         init: '{home}/github/gitlc/scripts/init_test.sh'
@@ -14,7 +14,7 @@ test:
       undeploy: false
     pull_request:
       username: 'robin'
-      dir: '{home}/github/'
+      dir: '{home}/github'
       scripts:
         before: '{home}/github/gitlc/scripts/update_gitlc.sh'
         init: '{home}/github/gitlc/scripts/init_test.sh'
