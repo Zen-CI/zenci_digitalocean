@@ -270,6 +270,7 @@ function zenci_digitalocean_create_instance($template_name, $prefix){
       $digitalOceanAPI->reInitCurl();
       $data = $digitalOceanAPI->getDroplet($droplet->id);
       if($data->status == 'active'){
+        sleep(5); //Do extra 5 sec sleep to make sure that Instance is up now. 
         return $data;
       }
     }
