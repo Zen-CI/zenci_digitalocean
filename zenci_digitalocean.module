@@ -181,6 +181,7 @@ function zenci_digitalocean_zenci_webhook($method, $data) {
            
            $answer = array();
            $answer['server'] = $data->networks->v4[0]->ip_address;
+           return $answer;
          break;         
        }
       break;
